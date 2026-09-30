@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="80" xmlns="http://www.w3.org/2000/svg">
+  <rect width="200" height="80" fill="#1e90ff"/>
+  <text x="100" y="45" font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#ffffff" text-anchor="middle">Parkomat</text>
+  <text x="100" y="65" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle">Haim</text>
+  <path d="M30 55 L40 45 L70 45 L80 55 Z" fill="#fff"/>
+</svg>

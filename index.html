@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+  <meta charset="UTF-8">
+  <title>Parkomat – Haim</title>
+  <style>
+    body {font-family: Arial, Helvetica, sans-serif; background:#f4f4f4; margin:0; padding:20px; direction: rtl; text-align: right;}
+    .container {max-width:600px; margin:auto; background:#fff; padding:20px; box-shadow:0 0 10px rgba(0,0,0,0.1);}
+    h1 {color:#1e90ff; text-align:center;}
+    img {display:block; margin:auto; max-width:150px;}
+    label {display:block; margin-top:15px;}
+    input, select, textarea {width:100%; padding:8px; margin-top:5px; border:1px solid #ccc; border-radius:4px;}
+    button {margin-top:20px; background:#1e90ff; color:#fff; border:none; padding:12px; width:100%; font-size:16px; border-radius:4px; cursor:pointer;}
+    button:hover {background:#187bcd;}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Parkomat – Haim</h1>
+    <img src="parkomat_logo.svg" alt="Parkomat Logo" />
+    <p>העלה קובץ אל מערכת Parkomat והקובע האם הוא יישמר ב‑Google Drive או יישלח ל‑Slack, בהתאם למחלקה שציינת.</p>
+    <form id="uploadForm" method="POST" action="http://localhost:5679/webhook/parking-agents" enctype="application/json">
+      <label for="message">הודעה (אופציונלי)</label>
+      <textarea id="message" name="message" rows="2" placeholder="הודעה למערכת"></textarea>
+
+      <label for="destination">יעד העלאה</label>
+      <select id="destination" name="destination">
+        <option value="drive">Google Drive</option>
+        <option value="slack">Slack</option>
+      </select>
+
+      <label for="department">מחלקה</label>
+      <input type="text" id="department" name="department" placeholder="לדוגמה: operations, sales, support" required />
+
+      <label for="file">קובץ להעלאה</label>
+      <input type="file" id="file" name="file" required />
+
+      <button type="submit">העלה</button>
+    </form>
+    <script>
+      // נטרל שליחת הטופס הרגילה ונבצע fetch עם FormData כדי לתמוך בקבצים
+      document.getElementById('uploadForm').addEventListener('submit', async function(e){
+        e.preventDefault();
+        const form = e.target;
+        const formData = new FormData();
+        formData.append('message', form.message.value);
+        formData.append('destination', form.destination.value);
+        formData.append('department', form.department.value);
+        formData.append('file', form.file.files[0]);
+        try {
+          const resp = await fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            // נשתמש ב‑basic auth של n8n (admin/admin)
+            headers: {
+              'Authorization': 'Basic ' + btoa('admin:admin')
+            }
+          });
+          const text = await resp.text();
+          alert('הבקשה נשלחה. קיבלת תשובה: ' + resp.status + '\n' + text);
+        } catch(err){
+          alert('שגיאה בשליחת הבקשה: ' + err);
+        }
+      });
+    </script>
+  </div>
+</body>
+</html>
